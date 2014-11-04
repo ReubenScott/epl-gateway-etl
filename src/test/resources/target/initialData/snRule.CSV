@@ -1,0 +1,6 @@
+deviceType,snRegx
+PB980,35B(\d{7})
+SCD700,V(\d{7})(S|SX|A|AX|BX|CX)
+ForceTriad,T((\d{6})E|(\d{7})(E|EX))
+CoolTip,P(d{7})(T|TX|J|JX)
+test6,P(d{7})(T|TX|J|JX)
