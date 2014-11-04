@@ -1,0 +1,5 @@
+deviceType,snRegx
+PB980_Ventilator,35[Bb]((\\d{2}[Pp]\\d{4})|\\d{7})
+SCD 700,[Vv](\\d{7})([Ss]|[Aa]|(([AaBbCcSs])[Xx]))
+ForceTriad,[Tt]\\d[A-La-l]((\\d{4})[Ee]|(\\d{5})([Ee]|[Ee][Xx]))
+CoolTip,[Pp]\\d[A-La-l](\\d{4})([Tt]|[Jj]|([JjTt][Xx]))
