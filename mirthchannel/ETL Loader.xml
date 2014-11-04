@@ -1,0 +1,146 @@
+<channel>
+  <id>2f10dafb-8ec5-4e50-ab7d-4d57f7de7796</id>
+  <name>ETL Loader</name>
+  <description></description>
+  <enabled>true</enabled>
+  <version>2.2.1.5861</version>
+  <lastModified>
+    <time>1368600670882</time>
+    <timezone>Asia/Calcutta</timezone>
+  </lastModified>
+  <revision>35</revision>
+  <sourceConnector>
+    <name>sourceConnector</name>
+    <properties>
+      <property name="DataType">JavaScript Reader</property>
+      <property name="host">sink</property>
+      <property name="pollingTime">12:22 PM</property>
+      <property name="pollingType">time</property>
+      <property name="script">logger.info(&quot;Started Loader&quot;);
+var host = globalMap.get(&apos;host&apos;);
+var port = globalMap.get(&apos;port&apos;);
+var database = globalMap.get(&apos;database&apos;);
+var username = globalMap.get(&apos;username&apos;);
+var password = globalMap.get(&apos;password&apos;);
+
+var customer_file_path = globalMap.get(&apos;customer_file_path&apos;);
+var location_file_path = globalMap.get(&apos;location_file_path&apos;);
+var locationrole_file_path = globalMap.get(&apos;locationrole_file_path&apos;);
+var device_file_path = globalMap.get(&apos;device_file_path&apos;);
+
+//logger.info(&quot;username&quot; + username)
+logger.info(&quot;Loading customer from : &quot; + customer_file_path);
+var obj = new Packages.com.covidien.csvreader.reader.CustomerReader(host, database, username, password, port);
+obj.readCustomerCSVFile(customer_file_path);
+logger.info(&quot;Completed customer loading&quot;);
+
+logger.info(&quot;Loading Location from : &quot; + location_file_path);
+var obj1 = new Packages.com.covidien.csvreader.reader.LocationReader(host, database, username, password, port);
+obj1.readLocationCSVFile(location_file_path);
+logger.info(&quot;Completed Location loading&quot;);
+
+logger.info(&quot;Loading LocationRole from : &quot; + locationrole_file_path);
+var obj1 = new Packages.com.covidien.csvreader.reader.LocationRoleReader(host, database, username, password, port);
+obj1.readLocationRoleCSVFile(locationrole_file_path);
+logger.info(&quot;Completed LocationRole loading&quot;);
+
+logger.info(&quot;Loading Device from : &quot; + device_file_path);
+var obj1 = new Packages.com.covidien.csvreader.reader.DeviceReader(host, database, username, password, port);
+obj1.readDeviceCSVFile(device_file_path);
+logger.info(&quot;Completed Device loading&quot;);
+
+
+</property>
+    </properties>
+    <transformer>
+      <steps/>
+      <inboundTemplate encoding="base64"></inboundTemplate>
+      <outboundTemplate encoding="base64"></outboundTemplate>
+      <inboundProtocol>HL7V2</inboundProtocol>
+      <outboundProtocol>HL7V2</outboundProtocol>
+      <inboundProperties>
+        <property name="convertLFtoCR">true</property>
+        <property name="handleRepetitions">false</property>
+        <property name="handleSubcomponents">false</property>
+        <property name="stripNamespaces">true</property>
+        <property name="useStrictParser">false</property>
+        <property name="useStrictValidation">false</property>
+      </inboundProperties>
+      <outboundProperties>
+        <property name="convertLFtoCR">true</property>
+        <property name="handleRepetitions">false</property>
+        <property name="handleSubcomponents">false</property>
+        <property name="stripNamespaces">true</property>
+        <property name="useStrictParser">false</property>
+        <property name="useStrictValidation">false</property>
+      </outboundProperties>
+    </transformer>
+    <filter>
+      <rules/>
+    </filter>
+    <transportName>JavaScript Reader</transportName>
+    <mode>SOURCE</mode>
+    <enabled>true</enabled>
+    <version>2.2.1.5861</version>
+  </sourceConnector>
+  <destinationConnectors>
+    <connector>
+      <name>Destination 1</name>
+      <properties>
+        <property name="DataType">JavaScript Writer</property>
+        <property name="host">sink</property>
+        <property name="script">logger.info(&quot;Completed Loader&quot;);
+</property>
+      </properties>
+      <transformer>
+        <steps/>
+        <inboundProtocol>HL7V2</inboundProtocol>
+        <outboundProtocol>HL7V2</outboundProtocol>
+        <inboundProperties>
+          <property name="convertLFtoCR">true</property>
+          <property name="handleRepetitions">false</property>
+          <property name="handleSubcomponents">false</property>
+          <property name="stripNamespaces">true</property>
+          <property name="useStrictParser">false</property>
+          <property name="useStrictValidation">false</property>
+        </inboundProperties>
+        <outboundProperties>
+          <property name="convertLFtoCR">true</property>
+          <property name="handleRepetitions">false</property>
+          <property name="handleSubcomponents">false</property>
+          <property name="stripNamespaces">true</property>
+          <property name="useStrictParser">false</property>
+          <property name="useStrictValidation">false</property>
+        </outboundProperties>
+      </transformer>
+      <filter>
+        <rules/>
+      </filter>
+      <transportName>JavaScript Writer</transportName>
+      <mode>DESTINATION</mode>
+      <enabled>true</enabled>
+      <version>2.2.1.5861</version>
+    </connector>
+  </destinationConnectors>
+  <properties>
+    <property name="clearGlobalChannelMap">true</property>
+    <property name="dont_store_filtered">false</property>
+    <property name="encryptData">false</property>
+    <property name="error_messages_only">false</property>
+    <property name="initialState">started</property>
+    <property name="max_message_age">-1</property>
+    <property name="store_messages">true</property>
+    <property name="synchronous">true</property>
+    <property name="transactional">false</property>
+  </properties>
+  <preprocessingScript>// Modify the message variable below to pre process data
+return message;</preprocessingScript>
+  <postprocessingScript>// This script executes once after a message has been processed
+return;</postprocessingScript>
+  <deployScript>// This script executes once when the channel is deployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</deployScript>
+  <shutdownScript>// This script executes once when the channel is undeployed
+// You only have access to the globalMap and globalChannelMap here to persist data
+return;</shutdownScript>
+</channel>

@@ -1,0 +1,56 @@
+<map>
+  <entry>
+    <string>Shutdown</string>
+    <string>// This script executes once when all channels shut down from a redeploy
+// You only have access to the globalMap here to persist data
+return;</string>
+  </entry>
+  <entry>
+    <string>Deploy</string>
+    <string>// This script executes once when all channels start up from a redeploy
+// You only have access to the globalMap here to persist data
+
+//Database Credentials..
+
+var database = &apos;covidiendb&apos;;
+var username = &apos;covidiendbuser&apos;;
+var password = &apos;C0vidi3nDrp&apos;;
+var host = &apos;172.16.1.131&apos;;
+var port = &apos;3306&apos;;
+globalMap.put(&quot;host&quot;,host);
+globalMap.put(&quot;port&quot;,port);
+globalMap.put(&quot;database&quot;,database);
+globalMap.put(&quot;username&quot;,username);
+globalMap.put(&quot;password&quot;,password);
+
+//Customer CSV File Location
+var customerFile = &apos;/home/covidien/GATEWAY_EXTRACT_V3/CUSTOMER.csv&apos;;
+globalMap.put(&quot;customer_file_path&quot;,customerFile);
+
+//Location CSV File location
+var locationFile = &apos;/home/covidien/GATEWAY_EXTRACT_V3/LOCATION.csv&apos;;
+globalMap.put(&quot;location_file_path&quot;,locationFile);
+
+//LocationRole CSV File location
+var locationRoleFile = &apos;/home/covidien/GATEWAY_EXTRACT_V3/LOCATION_ROLE.csv&apos;;
+globalMap.put(&quot;locationrole_file_path&quot;,locationRoleFile);
+
+//Device CSV File location
+var deviceFile = &apos;/home/covidien/GATEWAY_EXTRACT_V3/DEVICE.csv&apos;;
+globalMap.put(&quot;device_file_path&quot;,deviceFile);
+
+return;</string>
+  </entry>
+  <entry>
+    <string>Preprocessor</string>
+    <string>// Modify the message variable below to pre process data
+// This script applies across all channels
+return message;</string>
+  </entry>
+  <entry>
+    <string>Postprocessor</string>
+    <string>// This script executes once after a message has been processed
+// This script applies across all channels
+return;</string>
+  </entry>
+</map>
