@@ -1,0 +1,31 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+  <!-- TODO: a jarjar format would be better -->
+  <id>bundle</id>    <!-- 打包后文件"-"后面的标识，如release -->
+  <formats>
+    <format>jar</format> <!--  打包的文件格式 可以有：tar.zip war zip -->
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>  <!-- 打的包中是否会带根目录符，还是直接src的同级文件 -->
+  <fileSets>
+    <fileSet>
+      <outputDirectory>/</outputDirectory>  <!--  打包后输出的路径 -->
+      <directory>D:\workspace\epl-parent-pom\lib</directory>  <!-- 需要打包的路径     -->
+    </fileSet>
+  </fileSets>
+
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <unpack>true</unpack>
+      <scope>system</scope>
+    </dependencySet>
+  </dependencySets>
+
+
+</assembly>
