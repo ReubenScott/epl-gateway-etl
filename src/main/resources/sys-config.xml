@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"  ?>
 <config>
 
-  <!--数据库相关信息: 1、驱动；2、url；3、user；4、password-->=
-  <db-info name="dbmysql" >
-    <alias>attendance</alias>
+  <!--数据库相关信息: 1、驱动；2、url；3、user；4、password-->
+  <db-info name="myETL" >
+    <alias>etl</alias>
     <driverclass>com.mysql.jdbc.Driver</driverclass>
     <url>
-      jdbc:mysql://localhost:3306/etl?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull
+      jdbc:mysql://localhost:3306/ETL?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull
     </url>
     <username>root</username>
     <password>123456</password>
@@ -20,6 +20,24 @@
     <password>edw123</password>
   </db-info>
   
-  <default>dbmysql</default>
+  
+  <!-- 正式环境 -->
+  <db-info name="db71" >
+    <driverclass>com.ibm.db2.jcc.DB2Driver</driverclass>
+    <url>jdbc:db2://32.137.32.71:60000/BIDB</url>
+    <username>bioffice</username>
+    <password>bioffice</password>
+  </db-info>  
+  
+  
+  <!-- 正式环境 -->
+  <db-info name="db94" >
+    <driverclass>com.ibm.db2.jcc.DB2Driver</driverclass>
+    <url>jdbc:db2://32.137.32.94:60000/EDWDB</url>
+    <username>edw</username>
+    <password>edw123</password>
+  </db-info>  
+  
+  <default>db94</default>
 
 </config> 

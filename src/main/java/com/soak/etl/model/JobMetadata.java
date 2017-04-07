@@ -6,7 +6,8 @@ import com.soak.framework.orm.Table;
 /**
  * 基础层作业元数据登记表
  */
-@Table(schema = "ETL", name = "JOB_METADATA", pk = { "sid" })
+//@Table(schema = "ETL", name = "JOB_METADATA", pk = { "sid" })
+@Table(schema = "SCHE", name = "JOB_METADATA", pk = { "sid" })
 public class JobMetadata {
 
   @Column(name = "SYSCODE")

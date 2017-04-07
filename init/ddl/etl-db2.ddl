@@ -26,7 +26,7 @@ Create table ETL.BUF_METADATA (
 in TBS_CFG_DATA Index in TBS_CFG_INDEX  
 Compress Yes 
 Partitioning Key (SCHEMATA) Using Hashing 
-ORGANIZE BY DIMENSIONS (SYSCODE,JOB_TYPE,RUNTYPE ) ;
+ORGANIZE BY DIMENSIONS (SYSCODE,PTYPE,RUNTYPE ) ;
 
 
 Comment on Table  ETL.BUF_METADATA             is 'EDW源系统文件列表' ;
@@ -109,7 +109,7 @@ Create table ETL.JOB_METADATA (
 in TBS_CFG_DATA Index in TBS_CFG_INDEX  
 Compress Yes 
 Partitioning Key (JOB_NM) Using Hashing  
-ORGANIZE BY DIMENSIONS (SYSCODE,STBNAME,RUNTYPE ) ;
+ORGANIZE BY DIMENSIONS (SYSCODE,JOB_TYPE,RUNTYPE ) ;
 
 
 Comment on Table ETL.JOB_METADATA is '基础层作业元数据登记表';
@@ -152,7 +152,6 @@ Comment on Column ETL.JOB_SCHE.JOB_PRIO          is '作业优先级，数字越
 Comment on Column ETL.JOB_SCHE.SRC_DT            is '源系统数据日期';
 Comment on Column ETL.JOB_SCHE.SYSCODE           is '系统代号';
 Comment on Column ETL.JOB_SCHE.DELFILE           is '原文件名（DEL文件名）';
-Comment on Column ETL.JOB_SCHE.FLAG              is '调度标记（A:默认调度）';
 Comment on Column ETL.JOB_SCHE.BEGIN_TM          is '作业运行开始时间';
 Comment on Column ETL.JOB_SCHE.END_TM            is '作业运行结束时间';
 

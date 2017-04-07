@@ -124,7 +124,8 @@ public class EtlJobImpl implements EtlJob, Delayed {
       bufSche.setStatus(JobStatus.PRE.getValue());
       bufSches.add(bufSche);
     }
-    jdbc.truncateTable(null, "ETL",  "BUF_SCHE"); // 清空 缓冲层调度登记表
+    //TODO   该模式名 "SCHE" 为  "ETL"
+    jdbc.truncateTable(null, "SCHE",  "BUF_SCHE"); // 清空 缓冲层调度登记表
 
     boolean flag = jdbc.saveAnnotatedBean(null, bufSches);
     if (!flag) {
@@ -132,8 +133,14 @@ public class EtlJobImpl implements EtlJob, Delayed {
       logger.error("ETL init Buf job Failed ! DATE: {}" , srcDt);
     }
 
-    // 初始化　作业层
-    jdbc.truncateTable(null, "ETL",  "JOB_SCHE"); // 清空 基础层作业调度表
+    // 该模式名 "SCHE" 为  "ETL" 初始化　作业层  清空 基础层作业调度表
+//    jdbc.truncateTable(null, "SCHE",  "JOB_SCHE"); 
+    jdbc.deleteAnnotatedBean(null, new BufSche(){ 
+      public java.sql.Date getSrcDt() {
+        return new java.sql.Date(srcDt.getTime());
+      }
+    });
+    
     
 
     // 需要执行的 JOB
@@ -178,7 +185,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 
    */
   public synchronized void work() {
-    String backDir = properties.getProperty("BACKDIR").trim() + "/"; // 备份目录
+//    String backDir = properties.getProperty("BACKDIR").trim() + "/"; // 备份目录
     SystemPara systemPara = checkSystemStatus();
 
     Date srcDt = systemPara.getSrcDt();
@@ -210,7 +217,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 
    */
   public void loadWork(final Date curEtlDate) {
-    // //TODO 读取 系统处理日期 ETL.SYSTEMPARA 表
+    // 读取 系统处理日期 ETL.SYSTEMPARA 表
     // SystemPara systemPara = jdbc.findOneByAnnotatedSample(null, new SystemPara());
     final String receFileDir = properties.getProperty("RECEFILEDIR").trim() + "/";
     String fileDate = DateUtil.formatDate(curEtlDate, DateStyle.YYYYMMDD); // 文件时间名
@@ -483,7 +490,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
             jobRestrictions.addCondition(Condition.Equal, "JOB_NM", table.getJobName());
 
             boolean jobUpdateFlag = jdbc.updateAnnotatedEntity(null, jobSche, jobRestrictions);
-            while (!jobUpdateFlag) {
+            if(!jobUpdateFlag) {
               logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
             }
 
@@ -492,24 +499,21 @@ public class EtlJobImpl implements EtlJob, Delayed {
             FileUtil.moveFile(sqlfile, backDir);
             FileUtil.moveFile(delfile, backDir);
 
-          } else {
-            logger.error("load [" + schema + "." + tablename + "] Fail !");
-            // del 数据文件不存在 设置处理 状态为 ERROR
+          } else {// 加载 表数据异常   设置处理 状态为 ERROR
+            logger.error("load [" + schema + "." + tablename + "] Fail !");            
             bufSche.setStatus(JobStatus.ERROR.getValue());
+            //TODO 异常
           }
-        } else {
+        } else { // 清空表  设置处理 状态为 ERROR
           logger.error("truncate table [" + schema + "." + tablename + "] Fail !");
-          // del 数据文件不存在 设置处理 状态为 ERROR
           bufSche.setStatus(JobStatus.ERROR.getValue());
         }
-      } else {
+      } else { // del 数据文件不存在 设置处理 状态为 ERROR
         logger.info("table [" + schema + "." + tablename + "] DEL File not exits !");
-        // del 数据文件不存在 设置处理 状态为 ERROR
         bufSche.setStatus(JobStatus.ERROR.getValue());
       }
-    } else {
+    } else { // 目标表不存在 设置处理 状态为 ERROR
       logger.info("table [" + schema + "." + tablename + "] not exits !");
-      // 目标表不存在 设置处理 状态为 ERROR
       bufSche.setStatus(JobStatus.ERROR.getValue());
     }
 
@@ -530,7 +534,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * @param filePath
    */
   public void runJobSche(String jobName, String jobCmd, Date date) {
-    // TODO 调用存储过程 提取出来
+    // 调用存储过程 提取出来
     // List result = jdbc.callProcedure(null, "EDW.SP_F_CHN_SJ_FCHARGE_REC", new String[] { "2015-12-28" }, Types.INTEGER);
     List result = jdbc.callProcedure(null, jobCmd, new Object[] { date }, Types.INTEGER);
     

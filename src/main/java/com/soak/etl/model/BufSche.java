@@ -9,7 +9,8 @@ import com.soak.framework.orm.Table;
 /**
  * 缓冲层调度登记表
  */
-@Table(schema = "ETL", name = "buf_sche", pk = { "sid" })
+//@Table(schema = "ETL", name = "buf_sche", pk = { "sid" })
+@Table(schema = "SCHE", name = "buf_sche", pk = { "sid" })
 public class BufSche {
 
 //  @Column(name = "SID")

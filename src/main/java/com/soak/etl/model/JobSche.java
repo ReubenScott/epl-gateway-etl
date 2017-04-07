@@ -9,7 +9,8 @@ import com.soak.framework.orm.Table;
 /**
  * 基础层作业调度表
  */
-@Table(schema = "ETL", name = "job_sche", pk = { "sid" })
+//@Table(schema = "ETL", name = "job_sche", pk = { "sid" })
+@Table(schema = "SCHE", name = "job_sche", pk = { "sid" })
 public class JobSche {
 
   @Column(name = "SYSCODE")
