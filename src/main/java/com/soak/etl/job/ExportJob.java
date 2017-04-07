@@ -8,7 +8,7 @@ import java.sql.Connection;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.soak.framework.jdbc.JdbcHandler;
+import com.soak.framework.jdbc.core.JdbcTemplate;
 import com.soak.framework.util.ExcelUtil;
 import com.soak.framework.xml.XmlSqlMapper;
 
@@ -30,7 +30,7 @@ public class ExportJob implements EtlJob {
     
     System.out.println(sql);
     
-    Workbook workbook = JdbcHandler.getInstance().exportExcel(null,sql);
+    Workbook workbook = JdbcTemplate.getInstance().exportExcel(null,sql);
 
     FileOutputStream fos;
     try {
