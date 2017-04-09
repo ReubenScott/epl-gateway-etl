@@ -8,17 +8,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.util.IOUtils;
-
+import com.soak.common.io.IOHandler;
 import com.soak.etl.sql.analysis.SQLAnalysis;
 import com.soak.etl.sql.bean.TableBean;
 import com.soak.etl.sql.io.SQLReader;
-import com.soak.framework.io.IOHandler;
 
 public class MyTest {
   

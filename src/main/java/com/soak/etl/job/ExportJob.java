@@ -4,13 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Connection;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.soak.framework.jdbc.core.JdbcTemplate;
-import com.soak.framework.util.ExcelUtil;
-import com.soak.framework.xml.XmlSqlMapper;
+import com.soak.jdbcframe.jdbc.core.JdbcTemplate;
+import com.soak.jdbcframe.xml.XmlSqlMapper;
+
 
 /**
  * <p>

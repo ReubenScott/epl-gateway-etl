@@ -3,8 +3,9 @@ package com.soak.etl.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-import com.soak.framework.orm.Column;
-import com.soak.framework.orm.Table;
+import com.soak.jdbcframe.orm.Column;
+import com.soak.jdbcframe.orm.Table;
+
 
 /**
  * 缓冲层调度登记表

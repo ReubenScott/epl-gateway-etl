@@ -18,27 +18,25 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.soak.common.date.DateStyle;
+import com.soak.common.date.DateUtil;
 import com.soak.common.io.FileUtil;
-import com.soak.common.json.JsonUtil;
-import com.soak.common.metic.UUIDGenerator;
 import com.soak.common.terminal.SecureCRT;
 import com.soak.common.terminal.UserAuthInfo;
+import com.soak.common.util.BeanUtil;
+import com.soak.common.util.StringUtil;
 import com.soak.etl.constant.JobStatus;
 import com.soak.etl.constant.RunPeriod;
 import com.soak.etl.model.BufSche;
+import com.soak.etl.model.BufferMetadata;
 import com.soak.etl.model.JobMetadata;
 import com.soak.etl.model.JobSche;
 import com.soak.etl.model.SystemPara;
-import com.soak.etl.model.BufferMetadata;
-import com.soak.framework.date.DateStyle;
-import com.soak.framework.date.DateUtil;
-import com.soak.framework.jdbc.Condition;
-import com.soak.framework.jdbc.Restrictions;
-import com.soak.framework.jdbc.core.JdbcTemplate;
 import com.soak.framework.scheduler.SchedulerManager;
 import com.soak.framework.thread.ThreadPool;
-import com.soak.framework.util.BeanUtil;
-import com.soak.framework.util.StringUtil;
+import com.soak.jdbcframe.jdbc.Condition;
+import com.soak.jdbcframe.jdbc.Restrictions;
+import com.soak.jdbcframe.jdbc.core.JdbcTemplate;
 
 /**
  * <p>

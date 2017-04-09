@@ -1,7 +1,8 @@
 package com.soak.etl.model;
 
-import com.soak.framework.orm.Column;
-import com.soak.framework.orm.Table;
+import com.soak.jdbcframe.orm.Column;
+import com.soak.jdbcframe.orm.Table;
+
 
 /**
  * EDW源系统文件列表
