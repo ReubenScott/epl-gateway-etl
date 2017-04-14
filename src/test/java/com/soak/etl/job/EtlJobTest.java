@@ -35,6 +35,14 @@ public class EtlJobTest {
   @Test
   public void testETLJob() {
     etlJobImpl.work();
+    while(true){
+      // 休息1小时
+      try {
+        Thread.sleep(1000 * 60 * 60); // 休息1小时
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   //  etlJobImpl.loadDelFile("IND_REPORT_DATA", "E:/ftpdata/P_063_CMIS_IND_REPORT_DATA_20150708.del", (char)29 );
   }
 
@@ -51,7 +59,7 @@ public class EtlJobTest {
   
 //  @Test
   public void testLoadCVS() {
-    etlJobImpl.downloadDataFile();
+//    etlJobImpl.downloadDataFile();
   }
   
 

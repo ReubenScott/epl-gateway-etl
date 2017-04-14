@@ -26,12 +26,6 @@ public class JobSche {
   // @Column(name = "SCHEMATA")
   private String schema; // varchar(15) 源系统表SCHEMA
 
-  @Column(name = "JOB_CMD")
-  private String jobCmd; // char(4) 作业命令
-
-  @Column(name = "JOB_PAR")
-  private String jobParam; // 作业参数
-
   @Column(name = "JOB_PRIO")
   private Integer priority; // int(11)处理优先级,数字越小， 优先级越高越先处理
 
@@ -106,22 +100,6 @@ public class JobSche {
 
   public void setEndTime(Timestamp endTime) {
     this.endTime = endTime;
-  }
-
-  public String getJobCmd() {
-    return jobCmd;
-  }
-
-  public void setJobCmd(String jobCmd) {
-    this.jobCmd = jobCmd;
-  }
-
-  public String getJobParam() {
-    return jobParam;
-  }
-
-  public void setJobParam(String jobParam) {
-    this.jobParam = jobParam;
   }
 
 }

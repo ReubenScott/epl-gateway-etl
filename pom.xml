@@ -130,6 +130,12 @@
     </dependency>
 
 
+    <!-- FTP  start  -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-ftp</artifactId>
+    </dependency>
+    <!-- FTP  end  -->
 
     <!-- CSV  start  -->
     <dependency>
