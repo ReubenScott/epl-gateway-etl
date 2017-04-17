@@ -175,8 +175,9 @@ public class EtlJobImpl implements EtlJob, Delayed {
     return false;
   }
 
+  
   /***
-   * ETL 处理
+   * ETL 批量处理
    * 
    */
   public synchronized void work() {
@@ -191,15 +192,11 @@ public class EtlJobImpl implements EtlJob, Delayed {
         // 初始化跑批作业
         init(srcDt);
       }
-
-
 //      
 //      //重新获取日期
 //      srcDt = checkSystemStatus().getSrcDt();
     }
   }
-  
-  
   
 
   /***
@@ -237,7 +234,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
 
         // 2 TODO 监控 下发文件
         // FTP下载文件 
-//        downloadDataFile(curEtlDate, delname) ;
+        downloadDataFile(curEtlDate, delname) ;
         
         if (FileUtil.isFileExits(markerfile) && FileUtil.isFileExits(sqlfile) && FileUtil.isFileExits(delfile)) {
           // 文件存在
@@ -402,6 +399,12 @@ public class EtlJobImpl implements EtlJob, Delayed {
           continue;
         }
         tempString = tempString.trim();
+        
+        //  解决建表语句  主键为空的  PRIMARY KEY() 的问题
+        if(tempString.startsWith("PRIMARY KEY(")){
+          tableddl.replace(tableddl.lastIndexOf(","), tableddl.lastIndexOf(",")+1, ")");
+          continue;
+        }
 
         // 首行 替换 数据库表名
         if (lineNumber == 1) {

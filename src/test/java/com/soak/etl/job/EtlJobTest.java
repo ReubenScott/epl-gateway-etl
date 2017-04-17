@@ -2,11 +2,19 @@ package com.soak.etl.job;
 
 
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.soak.common.date.DateUtil;
+import com.soak.etl.constant.JobStatus;
+import com.soak.etl.model.BufSche;
+import com.soak.jdbcframe.jdbc.Condition;
+import com.soak.jdbcframe.jdbc.Restrictions;
 
 
 public class EtlJobTest {
@@ -32,7 +40,7 @@ public class EtlJobTest {
   
   
 
-  @Test
+//  @Test
   public void testETLJob() {
     etlJobImpl.work();
     while(true){
@@ -43,18 +51,19 @@ public class EtlJobTest {
         e.printStackTrace();
       }
     }
-  //  etlJobImpl.loadDelFile("IND_REPORT_DATA", "E:/ftpdata/P_063_CMIS_IND_REPORT_DATA_20150708.del", (char)29 );
   }
 
-//  @Test
-  public void testLoadDelFile() {
-//    etlJobImpl.loadDelFile("FIM_NFT_ACCOUNT_XQTALLY",  "E:/ftpdata/P_063_FIM_NFT_ACCOUNT_XQTALLY_20160616.del", (char)29 );
-//    FIM_NFT_ACCOUNT_XQTALLY
-//    CMIS_IND_INFO
-//    CMIS_GUARANTY_CONTRACT
-//    CMIS_BUSINESS_CONTRACT
-//    CMIS_BILL_INFO
-//    etlJobImpl.loadDelFile("IND_REPORT_DATA", "E:/ftpdata/P_063_CMIS_IND_REPORT_DATA_20150708.del", (char)29 );
+  @Test
+  public void testLoadBuffData() {
+//    "CBOD_CICIFCIF"  "CBOD_ECCIFIDI"  P_063_CBOD_ECCIFIDI
+
+    BufSche bufSche = new BufSche();
+    bufSche.setSchema("EDW");
+    bufSche.setSplit(29);
+    bufSche.setTableName("CBOD_ECCIFIDI");
+    bufSche.setDelName("P_063_CBOD_ECCIFIDI");
+//    etlJobImpl.loadBuffData(bufSche, "E:\ftpdata",  new java.sql.Date(DateUtil.parseShortDate("2017-04-13").getTime()));
+    etlJobImpl.loadBuffData(bufSche, "E:/ftpdata/", DateUtil.parseShortDate("2017-04-13"));
   }
   
 //  @Test

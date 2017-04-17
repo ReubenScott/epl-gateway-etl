@@ -63,6 +63,26 @@
     </layout>
   </appender>
 
+  <!-- 时间滚动输出 level为 ERROR 日志 -->
+  <appender name="file—warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <Encoding>UTF-8</Encoding>
+    <File>${LOG_HOME}/myApp.warn.log</File>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_HOME}/myApp.warn-%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+      <MaxHistory>30</MaxHistory>
+      <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <MaxFileSize>10MB</MaxFileSize>
+      </TimeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+    </layout>
+  </appender>
 
   <!-- 时间滚动输出 level为 ERROR 日志 -->
   <appender name="file—error" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -111,6 +131,7 @@
     <appender-ref ref="console" />
     <appender-ref ref="file—debug" />
     <appender-ref ref="file—info" />
+    <appender-ref ref="file—warn" />
     <appender-ref ref="file—error" />
     <appender-ref ref="file-str" />
   </root>
