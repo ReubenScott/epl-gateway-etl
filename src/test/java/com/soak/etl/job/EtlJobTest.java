@@ -13,8 +13,8 @@ import org.junit.Test;
 import com.soak.common.date.DateUtil;
 import com.soak.etl.constant.JobStatus;
 import com.soak.etl.model.BufSche;
-import com.soak.jdbcframe.jdbc.Condition;
-import com.soak.jdbcframe.jdbc.Restrictions;
+import com.soak.framework.jdbc.Condition;
+import com.soak.framework.jdbc.Restrictions;
 
 
 public class EtlJobTest {

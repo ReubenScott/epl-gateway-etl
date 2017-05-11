@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import org.apache.poi.ss.usermodel.Workbook;
 
-import com.soak.jdbcframe.jdbc.core.JdbcTemplate;
-import com.soak.jdbcframe.xml.XmlSqlMapper;
+import com.soak.framework.jdbc.core.JdbcTemplate;
+import com.soak.framework.xml.XmlSqlMapper;
 
 
 /**

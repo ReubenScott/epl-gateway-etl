@@ -3,15 +3,16 @@ package com.soak.etl.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-import com.soak.jdbcframe.orm.Column;
-import com.soak.jdbcframe.orm.Table;
+import javax.persistence.Column;
+import javax.persistence.Table;
+
 
 
 /**
  * 缓冲层调度登记表
  */
 //@Table(schema = "ETL", name = "buf_sche", pk = { "sid" })
-@Table(schema = "SCHE", name = "buf_sche", pk = { "sid" })
+@Table(schema = "SCHE", name = "buf_sche")
 public class BufSche {
 
 //  @Column(name = "SID")

@@ -20,31 +20,36 @@
   </parent>
 
   <properties>
+    <project.build.name>etl</project.build.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
 
   <build>
+    <finalName>module-etl</finalName>
+
+
     <plugins>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.3</version>
         <configuration>
           <descriptors>
-            <descriptor>src/main/resources/assembly.xml</descriptor>
+            <descriptor>assembly.xml</descriptor>
           </descriptors>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.soak.etl.worker.Launch</mainClass>
+              <mainClass>com.soak.etl.worker.Launch</mainClass><!-- 程序主入口类 -->
+              <addClasspath>true</addClasspath><!-- 增加classpath -->
+              <classpathPrefix>lib</classpathPrefix><!-- classpath路径前缀 -->
             </manifest>
           </archive>
         </configuration>
-
 
         <!--  备注：第2步的命令也可以改成mvn package，但需要更改pom.xml , 在pom文件的build节点中添加这个插件的引用：  -->
         <executions>
@@ -116,6 +121,13 @@
     </dependency>
     <!-- 检测文本文件(字节流)的编码方式  end  -->
 
+
+
+    <!-- 注解  -->
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+    </dependency>
 
     <!-- dbcp 数据库连接池  -->
     <dependency>

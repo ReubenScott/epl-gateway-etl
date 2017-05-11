@@ -12,7 +12,7 @@
 
   <fileSets>
     <fileSet>
-      <outputDirectory>/</outputDirectory>  <!--  打包后输出的路径 -->
+      <outputDirectory>/lib</outputDirectory>  <!--  打包后输出的路径 -->
       <directory>D:\workspace\epl-parent-pom\lib</directory>  <!-- 需要打包的路径     -->
       <includes>
         <include>*.jar</include>

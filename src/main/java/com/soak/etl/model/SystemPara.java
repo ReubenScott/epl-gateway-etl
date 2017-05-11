@@ -2,8 +2,9 @@ package com.soak.etl.model;
 
 import java.sql.Date;
 
-import com.soak.jdbcframe.orm.Column;
-import com.soak.jdbcframe.orm.Table;
+import javax.persistence.Column;
+import javax.persistence.Table;
+
 
 /**
  * 

@@ -1,14 +1,15 @@
 package com.soak.etl.model;
 
-import com.soak.jdbcframe.orm.Column;
-import com.soak.jdbcframe.orm.Table;
+import javax.persistence.Column;
+import javax.persistence.Table;
+
 
 
 /**
  * EDW源系统文件列表
  */
 //@Table(schema="ETL" , name = "BUF_METADATA", pk = { "scheduleid" })
-@Table(schema="SCHE" , name = "BUF_METADATA", pk = { "scheduleid" })
+@Table(schema="SCHE" , name = "BUF_METADATA" )
 public class BufferMetadata {  //  
 
   @Column(name = "syscode")
