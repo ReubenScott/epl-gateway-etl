@@ -10,17 +10,6 @@
 
   <includeBaseDirectory>false</includeBaseDirectory>  <!-- 打的包中是否会带根目录符，还是直接src的同级文件 -->
 
-  <fileSets>
-    <fileSet>
-      <outputDirectory>/lib</outputDirectory>  <!--  打包后输出的路径 -->
-      <directory>D:\workspace\epl-parent-pom\lib</directory>  <!-- 需要打包的路径     -->
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-  </fileSets>
-
-
   <dependencySets>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
