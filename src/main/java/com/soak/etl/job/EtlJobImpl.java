@@ -103,7 +103,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 初始化跑批
    */
   public boolean init(final Date srcDt) {
-    logger.debug("ETL INIT DATE: %tF %<tT%n", System.currentTimeMillis());
+    logger.debug("ETL INIT DATE: {} %tF %<tT%n", System.currentTimeMillis());
     // jdbc.loadExcelFile("etl","job_metadata", "D:/abc.xlsx"); // 初始数据入库
 
     BufferMetadata loadDelList = new BufferMetadata();
@@ -125,7 +125,8 @@ public class EtlJobImpl implements EtlJob, Delayed {
     }
     
     //TODO
-    jdbc.truncateTable("SCHE",  "BUF_SCHE"); // 清空 缓冲层调度登记表
+//    jdbc.truncateTable("SCHE",  "BUF_SCHE"); // 清空 缓冲层调度登记表
+    jdbc.execute("delete from sche.BUF_SCHE where src_dt = ? ", srcDt);
 //    jdbc.truncateTable("ETL",  "BUF_SCHE"); // 清空 缓冲层调度登记表
 
     boolean flag = jdbc.saveAnnotatedBean(bufSches);
@@ -196,6 +197,16 @@ public class EtlJobImpl implements EtlJob, Delayed {
 //      //重新获取日期
 //      srcDt = checkSystemStatus().getSrcDt();
     }
+    
+
+    while(true){
+      // 休息1小时
+      try {
+        Thread.sleep(1000 * 60 * 60); // 休息1小时
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
   }
   
 
@@ -260,6 +271,9 @@ public class EtlJobImpl implements EtlJob, Delayed {
         for (final BufSche received : receivedList) {
           Thread bufloadThread = new Thread(received.getTableName()) {
             public void run() {
+              long threadId = Thread.currentThread().getId();
+              String threadName = Thread.currentThread().getName();
+              received.setSid(threadId + "-" + threadName);
               loadBuffData(received, receFileDir, curEtlDate);
             }
           };
@@ -369,6 +383,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
 
     // 设置处理 状态为 PROCESSING
     BufSche bufSche = new BufSche();
+    bufSche.setSid(table.getSid());  //设置线程号
     bufSche.setStatus(JobStatus.PROCESSING.getValue());
     bufSche.setStartTime(new java.sql.Timestamp(DateUtil.getCurrentDateTime().getTime()));
     Restrictions restrictions = new Restrictions();

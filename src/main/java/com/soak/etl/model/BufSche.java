@@ -15,8 +15,8 @@ import javax.persistence.Table;
 @Table(schema = "SCHE", name = "buf_sche")
 public class BufSche {
 
-//  @Column(name = "SID")
-//  private String sid; // int(11) 作业序列号
+  @Column(name = "SID")
+  private String sid; // int(11) 作业序列号
 
   @Column(name = "SRC_DT")
   private Date srcDt; // date  源系统数据日期
@@ -63,6 +63,14 @@ public class BufSche {
   @Column(name = "END_TM")
   private Timestamp endTime; // time处理运行结束时间
 
+  
+  public String getSid() {
+    return sid;
+  }
+
+  public void setSid(String sid) {
+    this.sid = sid;
+  }
 
   public Date getSrcDt() {
     return srcDt;
