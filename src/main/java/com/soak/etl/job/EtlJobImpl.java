@@ -217,7 +217,6 @@ public class EtlJobImpl implements EtlJob, Delayed {
             State  state =  new Thread(runnable).getState() ; 
             switch(state){
               case NEW:  // 新增加的
-                System.out.println("NEW");
                 break ;
               case RUNNABLE: 
                 System.out.println("RUNNABLE");
@@ -405,10 +404,6 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 
    */
   public void loadBuffData(BufSche table, String dir, Date curEtlDate) {
-    List<String>  schemas = jdbc.getSchemas();
-    System.out.println(schemas.size());
-    System.out.println(jdbc.getCurrentSchema());
-    
     String tablename = table.getTableName();
     String schema = table.getSchema();
     String delname = table.getDelName();
