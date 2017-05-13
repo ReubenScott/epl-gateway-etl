@@ -4,15 +4,20 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Thread.State;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Delayed;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -202,7 +207,37 @@ public class EtlJobImpl implements EtlJob, Delayed {
     while(true){
       // 休息1小时
       try {
-        Thread.sleep(1000 * 60 * 60); // 休息1小时
+        ThreadPoolExecutor threadPoolExecutor  =  threadPool.getThreadPoolExecutor();
+        BlockingQueue<Runnable> queue =  threadPoolExecutor.getQueue();
+        System.out.println(threadPoolExecutor.getActiveCount()  +"  "+  threadPoolExecutor.getTaskCount() + " " + queue.size() );
+        Iterator<Runnable>  it = queue.iterator();
+        while(it.hasNext()){
+          Runnable runnable = it.next() ;
+            // 线程执行状态
+            State  state =  new Thread(runnable).getState() ; 
+            switch(state){
+              case NEW:  // 新增加的
+                System.out.println("NEW");
+                break ;
+              case RUNNABLE: 
+                System.out.println("RUNNABLE");
+                break ;
+              case BLOCKED: 
+                System.out.println("BLOCKED");
+                break ;
+              case WAITING: 
+                System.out.println("WAITING");
+                break ;
+              case TIMED_WAITING: 
+                System.out.println("TIMED_WAITING");
+                break ;
+              case TERMINATED: // 线程执行完成
+                System.out.println("TERMINATED");
+                break ;
+            }
+        }
+        
+        Thread.sleep(1000 * 60 * 1); // 休息1小时
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -215,8 +250,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 
    */
   public void loadWork(final Date curEtlDate) {
-    // //TODO 读取 系统处理日期 ETL.SYSTEMPARA 表
-    // SystemPara systemPara = jdbc.findOneByAnnotatedSample(null, new SystemPara());
+    // 读取 系统处理日期 ETL.SYSTEMPARA 表
     final String receFileDir = properties.getProperty("RECEFILEDIR").trim() + "/";
     String fileDate = DateUtil.formatDate(curEtlDate, DateStyle.YYYYMMDD); // 文件时间名
 
@@ -243,9 +277,8 @@ public class EtlJobImpl implements EtlJob, Delayed {
 
         List<BufSche> receivedList = new ArrayList<BufSche>();
 
-        // 2 TODO 监控 下发文件
-        // FTP下载文件 
-        downloadDataFile(curEtlDate, delname) ;
+        // 2 TODO 监控 下发文件  FTP下载文件 
+//        downloadDataFile(curEtlDate, delname) ;
         
         if (FileUtil.isFileExits(markerfile) && FileUtil.isFileExits(sqlfile) && FileUtil.isFileExits(delfile)) {
           // 文件存在
@@ -271,10 +304,16 @@ public class EtlJobImpl implements EtlJob, Delayed {
         for (final BufSche received : receivedList) {
           Thread bufloadThread = new Thread(received.getTableName()) {
             public void run() {
-              long threadId = Thread.currentThread().getId();
-              String threadName = Thread.currentThread().getName();
-              received.setSid(threadId + "-" + threadName);
-              loadBuffData(received, receFileDir, curEtlDate);
+              try {
+                long threadId = Thread.currentThread().getId();
+                String threadName = Thread.currentThread().getName();
+                received.setSid(threadId + "-" + threadName);
+                loadBuffData(received, receFileDir, curEtlDate);
+              } catch (Exception e){
+                e.printStackTrace();
+              } finally{
+                
+              }
             }
           };
           bufloadThread.setPriority(Thread.MAX_PRIORITY); // 设置优先级
@@ -366,6 +405,10 @@ public class EtlJobImpl implements EtlJob, Delayed {
    * 
    */
   public void loadBuffData(BufSche table, String dir, Date curEtlDate) {
+    List<String>  schemas = jdbc.getSchemas();
+    System.out.println(schemas.size());
+    System.out.println(jdbc.getCurrentSchema());
+    
     String tablename = table.getTableName();
     String schema = table.getSchema();
     String delname = table.getDelName();
@@ -488,7 +531,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
       if (FileUtil.isFileExits(delfile)) {
         // 清空表
         if (jdbc.truncateTable( schema, tablename)) {
-          if (jdbc.loadDelFile( schema, tablename, delfile, dataSplit)) {
+          if (jdbc.loadCsvFile( schema, tablename, delfile, dataSplit)) {
             // 导入 数据成功
             logger.info("load [" + schema + "." + tablename + "] success !");
             // 设置处理 状态为 DONE

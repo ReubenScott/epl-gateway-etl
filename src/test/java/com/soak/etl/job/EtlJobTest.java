@@ -39,17 +39,16 @@ public class EtlJobTest {
   }
   
   
-//  @Test
+  @Test
   public void testLoadBuffData() {
-//    "CBOD_CICIFCIF"  "CBOD_ECCIFIDI"  P_063_CBOD_ECCIFIDI
-
+//    "CBOD_CICIFCIF"  "CBOD_ECCIFIDI"  P_063_CBOD_ECCIFIDI  CMIS_IND_INFO
     BufSche bufSche = new BufSche();
     bufSche.setSchema("EDW");
     bufSche.setSplit(29);
-    bufSche.setTableName("CBOD_ECCIFIDI");
-    bufSche.setDelName("P_063_CBOD_ECCIFIDI");
+    bufSche.setTableName("CMIS_IND_INFO");
+    bufSche.setDelName("P_063_CMIS_IND_INFO");
 //    etlJobImpl.loadBuffData(bufSche, "E:\ftpdata",  new java.sql.Date(DateUtil.parseShortDate("2017-04-13").getTime()));
-    etlJobImpl.loadBuffData(bufSche, "E:/ftpdata/", DateUtil.parseShortDate("2017-04-13"));
+    etlJobImpl.loadBuffData(bufSche, "E:/ftpdata/", DateUtil.parseShortDate("2017-05-11"));
   }
   
 //  @Test

@@ -42,6 +42,7 @@ COMMENT ON TABLE etl.buf_metadata  IS 'EDW源系统文件列表';
 -- 缓冲层调度登记表
 --------------------------------------------------
 Create table SCHE.BUF_SCHE (
+    SID              VARCHAR(32)                     ,
     SRC_DT           DATE                NOT NULL    ,
     SYSCODE          CHAR(4)                         ,
     SCHEMATA         VARCHAR(15)         NOT NULL    ,
