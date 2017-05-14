@@ -525,8 +525,8 @@ public class EtlJobImpl implements EtlJob, Delayed {
     if (jdbc.isTableExits( schema, tablename)) {
       if (FileUtil.isFileExits(delfile)) {
         // 清空表
-        if (jdbc.truncateTable( schema, tablename)) {
-          if (jdbc.loadCsvFile( schema, tablename, delfile, dataSplit)) {
+        if (jdbc.truncateTable(schema, tablename)) {
+          if (jdbc.loadCsvFile(schema, tablename, delfile, dataSplit, (char)0)) {
             // 导入 数据成功
             logger.info("load [" + schema + "." + tablename + "] success !");
             // 设置处理 状态为 DONE
