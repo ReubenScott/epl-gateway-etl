@@ -29,7 +29,7 @@ public class ExportJob implements EtlJob {
     
     System.out.println(sql);
     
-    Workbook workbook = JdbcTemplate.getInstance().exportExcel(null,sql);
+    Workbook workbook = JdbcTemplate.getInstance().exportNamelessWorkbook(sql);
 
     FileOutputStream fos;
     try {
