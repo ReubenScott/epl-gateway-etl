@@ -1,6 +1,8 @@
 package com.soak.etl.worker;
 
+import com.soak.etl.job.EtlJob;
 import com.soak.etl.job.EtlJobImpl;
+import com.soak.etl.job.LoaderJobImpl;
 
 public class Launch {
 
@@ -9,8 +11,9 @@ public class Launch {
   }
   
   public static void main(String args[]){
-    EtlJobImpl etlJobImpl = new EtlJobImpl();
-    etlJobImpl.work();
+//    EtlJob etlJob = new EtlJobImpl();  
+    EtlJob etlJob = new LoaderJobImpl();  
+    etlJob.work();
     
 //    while(true){
 //      // 休息1小时
