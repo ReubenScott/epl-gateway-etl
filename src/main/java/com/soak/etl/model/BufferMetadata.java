@@ -3,55 +3,50 @@ package com.soak.etl.model;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
-
-
 /**
  * EDW源系统文件列表
  */
-//@Table(schema="ETL" , name = "BUF_METADATA", pk = { "scheduleid" })
-@Table(schema="SCHE" , name = "BUF_METADATA" )
-public class BufferMetadata {  //  
+// @Table(schema="ETL" , name = "BUF_METADATA", pk = { "scheduleid" })
+@Table(schema = "SCHE", name = "BUF_METADATA")
+public class BufferMetadata { //  
 
   @Column(name = "syscode")
   private String syscode; // char(4) 源系统代码
 
   @Column(name = "SCHEMATA")
-  private String schema; // varchar(15)源系统表SCHEMA
+  private String schema; // varchar(15)源系统表SCHEMA    TABSCHEMA
 
   @Column(name = "STBNAME")
   private String tableName; // varchar(100)源系统英文表名
 
+  @Column(name = "DestTabName")
+  private String destTabName; // varchar(10) 目标表名 
+
+  @Column(name = "process_mode")
+  private String processMode; // String(11)  处理方式  全量   变量  增量
+
   @Column(name = "STB_NAME_CN")
   private String tableComment; // varchar(200)源系统中文表名
-
+  
   @Column(name = "DELNAME")
   private String delName; // varchar(100) 源系统文件全名
 
   @Column(name = "SPLIT")
-  private Integer split; // char(4)  分隔符
+  private Integer split; // char(4) 分隔符    0x1d  , 
   
-  @Column(name = "TABSPS")
-  private String tableSpace; //  VARCHAR(30) 表空间
-   
-  @Column(name = "INDSPS")
-  private String indexSpace; //  VARCHAR(30) 索引空间
-
-  @Column(name = "JOB_NM")
-  private String jobName; // varchar(10)  下一步JOB: 存储过程名
-
-//  @Column(name = "RUN_DT")
-  private String rundt; // varchar(20) 作业运行时点类型。/X不跑/D每天/W每周/M每月/Y每年
-
   @Column(name = "RUNTYPE")
   private String runtype; // varchar(2) 运行标志(T是F否)
+  
+  @Column(name = "RUN_DT")
+  private String runDate; // varchar(20) 作业运行时点类型。/X不跑/D每天/W每周/M每月/Y每年
 
-  @Column(name = "P_PRIO")
-  private Integer priority; // int(11)处理优先级,数字越小， 优先级越高越先处理
+  @Column(name = "TABSPS")
+  private String tableSpace; // VARCHAR(30) 表空间
 
-  @Column(name = "P_WKRES")
-  private Integer resourceConsumption; // int(11)处理资源占用量，可调整、估算
+  @Column(name = "INDSPS")
+  private String indexSpace; // VARCHAR(30) 索引空间
 
-  @Column(name = "REMARK") 
+  @Column(name = "REMARK")
   private String remark; // varchar(256) 备注
 
   public String getSyscode() {
@@ -101,7 +96,6 @@ public class BufferMetadata {  //
   public void setSplit(Integer split) {
     this.split = split;
   }
-  
 
   public String getTableSpace() {
     return tableSpace;
@@ -120,20 +114,20 @@ public class BufferMetadata {  //
   }
 
 
-  public String getJobName() {
-    return jobName;
+  public String getDestTabName() {
+    return destTabName;
   }
 
-  public void setJobName(String jobName) {
-    this.jobName = jobName;
+  public void setDestTabName(String destTabName) {
+    this.destTabName = destTabName;
   }
 
-  public String getRundt() {
-    return rundt;
+  public String getRunDate() {
+    return runDate;
   }
 
-  public void setRundt(String rundt) {
-    this.rundt = rundt;
+  public void setRunDate(String runDate) {
+    this.runDate = runDate;
   }
 
   public String getRuntype() {
@@ -144,20 +138,12 @@ public class BufferMetadata {  //
     this.runtype = runtype;
   }
 
-  public Integer getPriority() {
-    return priority;
+  public String getProcessMode() {
+    return processMode;
   }
 
-  public void setPriority(Integer priority) {
-    this.priority = priority;
-  }
-
-  public Integer getResourceConsumption() {
-    return resourceConsumption;
-  }
-
-  public void setResourceConsumption(Integer resourceConsumption) {
-    this.resourceConsumption = resourceConsumption;
+  public void setProcessMode(String processMode) {
+    this.processMode = processMode;
   }
 
   public String getRemark() {

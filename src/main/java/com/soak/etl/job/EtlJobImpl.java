@@ -532,17 +532,17 @@ public class EtlJobImpl implements EtlJob, Delayed {
             bufSche.setStatus(JobStatus.DONE.getValue());
 
             // 更改JOB 作业状态为 WAITING　存储过程
-            JobSche jobSche = new JobSche();
-            jobSche.setStatus(JobStatus.WAITING.getValue());
-            Restrictions jobRestrictions = new Restrictions();
-            jobRestrictions.addCondition(Condition.Equal, "SRC_DT", curEtlDate);
-            jobRestrictions.addCondition(Condition.Equal, "JOB_NM", table.getJobName());
-
-            boolean jobUpdateFlag = jdbc.updateAnnotatedEntity(jobSche, jobRestrictions);
-            
-            if (!jobUpdateFlag) {
-              logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
-            }
+//            JobSche jobSche = new JobSche();
+//            jobSche.setStatus(JobStatus.WAITING.getValue());
+//            Restrictions jobRestrictions = new Restrictions();
+//            jobRestrictions.addCondition(Condition.Equal, "SRC_DT", curEtlDate);
+//            jobRestrictions.addCondition(Condition.Equal, "JOB_NM", table.getJobName());
+//
+//            boolean jobUpdateFlag = jdbc.updateAnnotatedEntity(jobSche, jobRestrictions);
+//            
+//            if (!jobUpdateFlag) {
+//              logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
+//            }
 
             // 处理完成移动文件
 //            FileUtil.moveFile(markerfile, backDir);

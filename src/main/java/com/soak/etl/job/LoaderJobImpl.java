@@ -162,8 +162,9 @@ public class LoaderJobImpl implements EtlJob {
       jobSche.setStatus(JobStatus.PRE.getValue());
       jobSches.add(jobSche);
     }
-
-    flag = jdbc.saveAnnotatedBean(jobSches);
+     
+    //TODO JOB 作业 暂时不测
+//    flag = jdbc.saveAnnotatedBean(jobSches);
 
     // 任务调度管理器
     SchedulerManager scheduler = SchedulerManager.getInstance();
@@ -409,10 +410,12 @@ public class LoaderJobImpl implements EtlJob {
    * 
    */
   public void loadBuffData(BufSche table, String dir, Date curEtlDate) {
-    String tablename = table.getTableName();
+    String srcTabName = table.getTableName();
     String schema = table.getSchema();
     String delname = table.getDelName();
     Integer split = table.getSplit();
+    String destTabName = table.getDestTabName();  // 基础层表名
+    String processMode  = table.getProcessMode();  // 处理方式
 
     // 数据导入 分割符号 0X1D 29 dataSplit
     char dataSplit = (char) split.intValue();
@@ -432,14 +435,14 @@ public class LoaderJobImpl implements EtlJob {
     Restrictions restrictions = new Restrictions();
     restrictions.addCondition(Condition.Equal, "SRC_DT", curEtlDate);
     restrictions.addCondition(Condition.Equal, "SCHEMATA", schema);
-    restrictions.addCondition(Condition.Equal, "STBNAME", tablename);
+    restrictions.addCondition(Condition.Equal, "STBNAME", srcTabName);
 
     boolean updateFlag = jdbc.updateAnnotatedEntity(bufSche, restrictions);
     if (!updateFlag) {
-      logger.error("update ETL Step : LOAD [" + schema + "." + tablename + "] status [PROCESSING]  ERROR !");
+      logger.error("update ETL Step : LOAD [" + schema + "." + srcTabName + "] status [PROCESSING]  ERROR !");
       return;
     } else {
-      logger.debug("update ETL Step : LOAD [" + schema + "." + tablename + "] status [PROCESSING]  Success !");
+      logger.debug("update ETL Step : LOAD [" + schema + "." + srcTabName + "] status [PROCESSING]  Success !");
     }
 
     // 1. DDLFile 建表语句 createTableDDL
@@ -474,7 +477,7 @@ public class LoaderJobImpl implements EtlJob {
             String tmpStr = arrayStr[i];
             if (i == 2) {
               // 替换 数据库表名
-              tmpStr = schema + "." + tablename;
+              tmpStr = schema + "." + srcTabName;
             }
             tableStr.append(tmpStr + " ");
           }
@@ -486,7 +489,7 @@ public class LoaderJobImpl implements EtlJob {
         lineNumber++;
       }
 
-      // TODO 注意 数据源
+      // 注意 数据源
       switch (jdbc.getDBProductType()) {
         case DB2:
           // DB2 添加表空间
@@ -518,9 +521,9 @@ public class LoaderJobImpl implements EtlJob {
     }
 
     // 比较表结构 重建表
-    if (jdbc.isTableExits(schema, tablename)) {
+    if (jdbc.isTableExits(schema, srcTabName)) {
       // 表结构改变的话 表删除重建
-      if (jdbc.dropTable(schema, tablename)) {
+      if (jdbc.dropTable(schema, srcTabName)) {
         jdbc.execute(tableddl.toString());
       }
     } else {
@@ -528,44 +531,49 @@ public class LoaderJobImpl implements EtlJob {
     }
 
     // 数据导入
-    if (jdbc.isTableExits(schema, tablename)) {
+    if (jdbc.isTableExits(schema, srcTabName)) {
       // if (FileUtil.isFileExits(delfile)) {
 
       InputStream in = downloadDelStream(curEtlDate, delname);
 
       // 清空表
-      if (jdbc.truncateTable(schema, tablename)) {
-        if (jdbc.loadCsvFile(schema, tablename, in, dataSplit, (char) 0, 0)) {
+      if (jdbc.truncateTable(schema, srcTabName)) {
+        if (jdbc.loadCsvFile(schema, srcTabName, in, dataSplit, (char) 0, 0)) {
           // 导入 数据成功
-          logger.info("load [" + schema + "." + tablename + "] success !");
+          logger.info("load [" + schema + "." + srcTabName + "] success !");
+          
+          //TODO 处理 数据入 基础层
+          if(processMode.equals("M")){
+            // 变量
+             jdbc.mergeTable(schema, srcTabName, schema , destTabName) ;
+          }
+          
+          
+          
           // 设置处理 状态为 DONE
           bufSche.setStatus(JobStatus.DONE.getValue());
 
-          // 更改JOB 作业状态为 WAITING　存储过程
-          JobSche jobSche = new JobSche();
-          jobSche.setStatus(JobStatus.WAITING.getValue());
-          Restrictions jobRestrictions = new Restrictions();
-          jobRestrictions.addCondition(Condition.Equal, "SRC_DT", curEtlDate);
-          jobRestrictions.addCondition(Condition.Equal, "JOB_NM", table.getJobName());
+//          // 更改JOB 作业状态为 WAITING　存储过程
+//          JobSche jobSche = new JobSche();
+//          jobSche.setStatus(JobStatus.WAITING.getValue());
+//          Restrictions jobRestrictions = new Restrictions();
+//          jobRestrictions.addCondition(Condition.Equal, "SRC_DT", curEtlDate);
+//          jobRestrictions.addCondition(Condition.Equal, "JOB_NM", table.getJobName());
+//
+//          boolean jobUpdateFlag = jdbc.updateAnnotatedEntity(jobSche, jobRestrictions);
+//
+//          if (!jobUpdateFlag) {
+//            logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
+//          }
 
-          boolean jobUpdateFlag = jdbc.updateAnnotatedEntity(jobSche, jobRestrictions);
-
-          if (!jobUpdateFlag) {
-            logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
-          }
-
-          // 处理完成移动文件
-          // FileUtil.moveFile(markerfile, backDir);
-          // FileUtil.moveFile(sqlfile, backDir);
-          // FileUtil.moveFile(delfile, backDir);
 
         } else {
-          logger.error("load [" + schema + "." + tablename + "] Fail !");
+          logger.error("load [" + schema + "." + srcTabName + "] Fail !");
           // del 数据文件不存在 设置处理 状态为 ERROR
           bufSche.setStatus(JobStatus.ERROR.getValue());
         }
       } else {
-        logger.error("truncate table [" + schema + "." + tablename + "] Fail !");
+        logger.error("truncate table [" + schema + "." + srcTabName + "] Fail !");
         // del 数据文件不存在 设置处理 状态为 ERROR
         bufSche.setStatus(JobStatus.ERROR.getValue());
       }
@@ -575,7 +583,7 @@ public class LoaderJobImpl implements EtlJob {
       // bufSche.setStatus(JobStatus.ERROR.getValue());
       // }
     } else {
-      logger.info("table [" + schema + "." + tablename + "] not exits !");
+      logger.info("table [" + schema + "." + srcTabName + "] not exits !");
       // 目标表不存在 设置处理 状态为 ERROR
       bufSche.setStatus(JobStatus.ERROR.getValue());
     }
@@ -584,7 +592,7 @@ public class LoaderJobImpl implements EtlJob {
     bufSche.setEndTime(new java.sql.Timestamp(DateUtil.getCurrentDateTime().getTime()));
     updateFlag = jdbc.updateAnnotatedEntity(bufSche, restrictions);
     if (!updateFlag) {
-      logger.error("update table [" + bufSche.getSchema() + "." + bufSche.getTableName() + "]  at  etltable : [" + schema + "  " + tablename + "] stats [" + bufSche.getStatus()
+      logger.error("update table [" + bufSche.getSchema() + "." + bufSche.getTableName() + "]  at  etltable : [" + schema + "  " + srcTabName + "] stats [" + bufSche.getStatus()
           + "]  ERROR !");
       return;
     }
