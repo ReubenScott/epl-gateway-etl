@@ -13,7 +13,7 @@
 
 
   <parent>
-    <groupId>com.soak</groupId>
+    <groupId>com.kindustry</groupId>
     <artifactId>epl-parent-pom</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../epl-parent-pom</relativePath>
@@ -37,7 +37,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.soak.etl.worker.Launch</mainClass><!-- 程序主入口类 -->
+              <mainClass>com.kindustry.etl.worker.Launch</mainClass><!-- 程序主入口类 -->
             </manifest>
           </archive>
         </configuration>
@@ -51,11 +51,11 @@
 
     <!--  配置项目依赖   -->
     <dependency>
-      <groupId>com.soak</groupId>
+      <groupId>com.kindustry</groupId>
       <artifactId>core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.soak</groupId>
+      <groupId>com.kindustry</groupId>
       <artifactId>jdbc</artifactId>
     </dependency>
 
