@@ -9,8 +9,7 @@ import javax.persistence.Table;
 /**
  * 缓冲层调度登记表
  */
-// @Table(schema = "ETL", name = "buf_sche", pk = { "sid" })
-@Table(schema = "SCHE", name = "buf_sche")
+@Table(schema = "ETL", name = "buf_sche")
 public class BufSche {
 
   @Column(name = "SID")

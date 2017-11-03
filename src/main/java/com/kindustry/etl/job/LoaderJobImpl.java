@@ -30,8 +30,8 @@ import com.kindustry.common.terminal.UserAuthInfo;
 import com.kindustry.common.util.BeanUtil;
 import com.kindustry.common.util.StringUtil;
 import com.kindustry.etl.constant.JobStatus;
+import com.kindustry.etl.constant.LoadMode;
 import com.kindustry.etl.constant.RunPeriod;
-import com.kindustry.etl.job.EtlJob;
 import com.kindustry.etl.model.BufSche;
 import com.kindustry.etl.model.BufferMetadata;
 import com.kindustry.etl.model.JobMetadata;
@@ -40,6 +40,7 @@ import com.kindustry.etl.model.SystemPara;
 import com.kindustry.framework.jdbc.Condition;
 import com.kindustry.framework.jdbc.Restrictions;
 import com.kindustry.framework.jdbc.core.JdbcTemplate;
+import com.kindustry.framework.jdbc.orm.OrmUtils;
 import com.kindustry.framework.scheduler.SchedulerManager;
 import com.kindustry.framework.thread.ThreadPool;
 
@@ -122,25 +123,24 @@ public class LoaderJobImpl implements EtlJob {
     for (final BufferMetadata table : tabdellist) {
       BufSche bufSche = new BufSche();
       BeanUtil.copyProperties(table, bufSche); // 初始化
-      // bufSche.setSid(UUIDGenerator.generate());
       bufSche.setSrcDt(new java.sql.Date(srcDt.getTime()));
       bufSche.setStatus(JobStatus.PRE.getValue());
       bufSches.add(bufSche);
     }
 
-    // TODO
-    // jdbc.truncateTable("SCHE", "BUF_SCHE"); // 清空 缓冲层调度登记表
-    jdbc.execute("delete from sche.BUF_SCHE where src_dt = ? ", srcDt);
     // jdbc.truncateTable("ETL", "BUF_SCHE"); // 清空 缓冲层调度登记表
+    String bufTableName = OrmUtils.getORMTableName(BufSche.class) ;  
+    jdbc.execute("delete from "+ bufTableName + " where src_dt = ? ", srcDt);
 
-    boolean flag = jdbc.saveAnnotatedBean(bufSches);
+    boolean flag = jdbc.saveAnnotatedEntity(bufSches);
     if (!flag) {
       // TODO 缓冲层 初始化失败 异常情况
       logger.error("ETL init Buf job Failed ! DATE: {}", srcDt);
     }
 
-    // 初始化　作业层
-    jdbc.truncateTable("SCHE", "JOB_SCHE"); // 清空 基础层作业调度表
+    // 初始化　作业层  清空 基础层作业调度表
+    String jobTableName = OrmUtils.getORMTableName(JobSche.class) ;  
+    jdbc.execute("delete from "+ jobTableName + " where src_dt = ? ", srcDt);
 
     // 需要执行的 JOB
     JobMetadata jobSample = new JobMetadata();
@@ -153,14 +153,14 @@ public class LoaderJobImpl implements EtlJob {
     for (JobMetadata item : jobMetadatas) {
       JobSche jobSche = new JobSche();
       BeanUtil.copyProperties(item, jobSche); // 初始化
-      // jobSche.setSid(UUIDGenerator.generate());
+//      jobSche.setSid(UUIDGenerator.generate());
       jobSche.setSrcDt(new java.sql.Date(srcDt.getTime()));
       jobSche.setStatus(JobStatus.PRE.getValue());
       jobSches.add(jobSche);
     }
      
     //TODO JOB 作业 暂时不测
-//    flag = jdbc.saveAnnotatedBean(jobSches);
+//    flag = jdbc.saveAnnotatedEntity(jobSches);
 
     // 任务调度管理器
     SchedulerManager scheduler = SchedulerManager.getInstance();
@@ -529,17 +529,33 @@ public class LoaderJobImpl implements EtlJob {
           // 导入 数据成功
           logger.info("load [" + schema + "." + srcTabName + "] success !");
           
-          //TODO 处理 数据入 基础层
-          if(processMode.equals("M")){
-            // 变量
-             jdbc.mergeTable(schema, srcTabName, schema , destTabName) ;
+          boolean loadflag = false ;
+          
+          //处理 数据入 基础层  
+          switch (LoadMode.getStatus(processMode)) {
+            case REPLACE:
+              loadflag = jdbc.replaceTable(schema, srcTabName, schema , destTabName) ;
+              break;
+            case MERGE: // 变量
+              loadflag = jdbc.mergeTable(schema, srcTabName, schema , destTabName) ;
+              break;
+            case INSERT:
+              loadflag = jdbc.insertTable(schema, srcTabName, schema , destTabName) ;
+              break;
+            default:
+              logger.error("BUF_METADATA source tabname [" + schema + "." + srcTabName + "] config Error !");
+              break;
+          }
+
+          if (loadflag) {
+            // 设置处理 状态为 DONE
+            bufSche.setStatus(JobStatus.DONE.getValue());
+          } else {
+            // 设置处理 状态为 ERROR
+            bufSche.setStatus(JobStatus.ERROR.getValue());
+            logger.error("load from source tabname [" + schema + "." + srcTabName + "]"  + " into target table [" + schema + "." + destTabName + "] Fail !");
           }
           
-          
-          
-          // 设置处理 状态为 DONE
-          bufSche.setStatus(JobStatus.DONE.getValue());
-
 //          // 更改JOB 作业状态为 WAITING　存储过程
 //          JobSche jobSche = new JobSche();
 //          jobSche.setStatus(JobStatus.WAITING.getValue());
@@ -552,7 +568,6 @@ public class LoaderJobImpl implements EtlJob {
 //          if (!jobUpdateFlag) {
 //            logger.error("update ETL Step : JOB [" + schema + "." + table.getJobName() + "] status [WAITING]  ERROR !");
 //          }
-
 
         } else {
           logger.error("load [" + schema + "." + srcTabName + "] Fail !");

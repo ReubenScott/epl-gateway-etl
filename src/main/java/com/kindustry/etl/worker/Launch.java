@@ -1,7 +1,6 @@
 package com.kindustry.etl.worker;
 
 import com.kindustry.etl.job.EtlJob;
-import com.kindustry.etl.job.EtlJobImpl;
 import com.kindustry.etl.job.LoaderJobImpl;
 
 public class Launch {

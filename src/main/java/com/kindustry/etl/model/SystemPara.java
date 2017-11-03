@@ -10,8 +10,7 @@ import javax.persistence.Table;
  * 
  * Comment on Table ETL.SYSTEMPARA is '系统参数表';
  */
-//@Table(schema = "ETL", name = "SYSTEMPARA")
-@Table(schema = "SCHE", name = "SYSTEMPARA")
+@Table(schema = "ETL", name = "SYSTEMPARA")
 public class SystemPara {
 
   @Column(name = "CURDATE")

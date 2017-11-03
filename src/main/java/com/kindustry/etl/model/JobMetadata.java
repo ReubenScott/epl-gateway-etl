@@ -7,8 +7,7 @@ import javax.persistence.Table;
 /**
  * 基础层作业元数据登记表
  */
-//@Table(schema = "ETL", name = "JOB_METADATA", pk = { "sid" })
-@Table(schema = "SCHE", name = "JOB_METADATA" )
+@Table(schema = "ETL", name = "JOB_METADATA" )
 public class JobMetadata {
 
   @Column(name = "SYSCODE")

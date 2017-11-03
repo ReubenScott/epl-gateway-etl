@@ -131,17 +131,17 @@ public class EtlJobImpl implements EtlJob, Delayed {
     
     //TODO
 //    jdbc.truncateTable("SCHE",  "BUF_SCHE"); // 清空 缓冲层调度登记表
-    jdbc.execute("delete from sche.BUF_SCHE where src_dt = ? ", srcDt);
+    jdbc.execute("delete from etl.BUF_SCHE where src_dt = ? ", srcDt);
 //    jdbc.truncateTable("ETL",  "BUF_SCHE"); // 清空 缓冲层调度登记表
 
-    boolean flag = jdbc.saveAnnotatedBean(bufSches);
+    boolean flag = jdbc.saveAnnotatedEntity(bufSches);
     if (!flag) {
       // TODO 缓冲层 初始化失败 异常情况
       logger.error("ETL init Buf job Failed ! DATE: {}" , srcDt);
     }
 
     // 初始化　作业层
-    jdbc.truncateTable("SCHE",  "JOB_SCHE"); // 清空 基础层作业调度表
+    jdbc.truncateTable("ETL",  "JOB_SCHE"); // 清空 基础层作业调度表
     
 
     // 需要执行的 JOB
@@ -161,7 +161,7 @@ public class EtlJobImpl implements EtlJob, Delayed {
       jobSches.add(jobSche);
     }
 
-    flag = jdbc.saveAnnotatedBean(jobSches);
+    flag = jdbc.saveAnnotatedEntity(jobSches);
     
     //任务调度管理器
     SchedulerManager scheduler = SchedulerManager.getInstance();

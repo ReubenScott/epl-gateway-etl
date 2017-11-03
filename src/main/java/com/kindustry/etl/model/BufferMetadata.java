@@ -6,8 +6,7 @@ import javax.persistence.Table;
 /**
  * EDW源系统文件列表
  */
-// @Table(schema="ETL" , name = "BUF_METADATA", pk = { "scheduleid" })
-@Table(schema = "SCHE", name = "BUF_METADATA")
+@Table(schema = "ETL", name = "BUF_METADATA")
 public class BufferMetadata { //  
 
   @Column(name = "syscode")

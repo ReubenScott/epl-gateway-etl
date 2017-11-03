@@ -6,13 +6,14 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
-
 /**
  * 基础层作业调度表
  */
-//@Table(schema = "ETL", name = "job_sche", pk = { "sid" })
-@Table(schema = "SCHE", name = "job_sche" )
+@Table(schema = "ETL", name = "job_sche")
 public class JobSche {
+
+  @Column(name = "SID")
+  private String sid; // int(11) 作业序列号
 
   @Column(name = "SYSCODE")
   private String syscode; // char(4) 源系统代码
@@ -40,6 +41,14 @@ public class JobSche {
 
   public String getSyscode() {
     return syscode;
+  }
+
+  public String getSid() {
+    return sid;
+  }
+
+  public void setSid(String sid) {
+    this.sid = sid;
   }
 
   public void setSyscode(String syscode) {
